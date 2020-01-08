@@ -8,8 +8,7 @@ fi
 
 SSHD_PORT=2222
 SSHD_FILE=/etc/ssh/sshd_config
-SUDOERS_FILE=/etc/sudoers
-  
+
 # 0. update package lists
 sudo apt-get update
 
@@ -33,17 +32,6 @@ echo "UsePrivilegeSeparation no"  | sudo tee -a $SSHD_FILE
 echo "PasswordAuthentication yes" | sudo tee -a $SSHD_FILE
 # 1.2. apply new settings
 sudo service ssh --full-restart
-  
-# 2. autostart: run sshd 
-sed -i '/^sudo service ssh --full-restart/ d' ~/.bashrc
-echo "%sudo ALL=(ALL) NOPASSWD: /usr/sbin/service ssh --full-restart" | sudo tee -a $SUDOERS_FILE
-cat << 'EOF' >> ~/.bashrc
-sshd_status=$(service ssh status)
-if [[ $sshd_status = *"is not running"* ]]; then
-  sudo service ssh --full-restart
-fi
-EOF
-  
 
 # summary: SSHD config info
 echo 
